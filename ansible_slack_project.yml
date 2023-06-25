@@ -1,0 +1,27 @@
+
+---
+- name: Send message to Slack
+  hosts: localhost
+  gather_facts: no
+  vars:
+    slack_channel: 'general'
+    slack_token: 'your-slack-token'
+    slack_message: 'Hello, this is an automated message from Ansible.'
+  tasks:
+    - name: Send message
+      uri:
+        url: https://slack.com/api/chat.postMessage
+        method: POST
+        return_content: yes
+        headers:
+          Authorization: "Bearer {{ slack_token }}"
+          Content-Type: "application/json; charset=utf-8"
+        body_format: json
+        body:
+          channel: "{{ slack_channel }}"
+          text: "{{ slack_message }}"
+      register: result
+    - name: Check result
+      debug:
+        var: result.json
+...
